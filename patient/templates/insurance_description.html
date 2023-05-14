@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block extrahead %} 
+    <link rel="stylesheet" type="text/css" href="{% static 'css/patient-styles.css' %}">
+{% endblock %}
+
+
+{% block content %}
+<div>
+    <div class="navbar-container">
+        {% include 'patient_page_navbar.html' %}
+    </div>
+    <div class="main-container px-2">
+        <div>
+            <p>{{insurance}}</p>
+            <p>{{insurance.provider.first_name}} {{insurance.provider.last_name}}</p>
+            <p>{{insurance.provider.email}}</p>
+            <p>{{insurance.description}}</p>
+            <form method="POST">
+                {% csrf_token %}
+                <input type="hidden" value="{{insurance.id}}" name="insurance_id">
+                <input type="submit" value="Purchase"> 
+            </form>
+        </div>
+        
+    </div>
+</div>
+    
+    
+{% endblock %}

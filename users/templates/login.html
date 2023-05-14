@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block extrahead %} 
+{% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <style>
+        
+
+    @media (min-width: 1200px) {
+        .desktop-container{
+            max-width: 25%;
+        }
+    }
+    </style>
+{% endblock %}
+
+
+{% block content %}
+<div>
+    {% include 'home_navbar.html' %}
+    <div class="mx-auto w-100 desktop-container container">
+        <div class="mt-4">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        {{message}}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %} 
+            <h2>Login</h2>
+        </div>
+        <form class="mt-3" action="" method="POST">
+            {% csrf_token %}
+            <div class="mb-3">
+              <label for="username" class="form-label">Username</label>
+              <input type="text" class="form-control" id="username" name="username" aria-describedby="emailHelp">
+              <!-- <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div> -->
+            </div>
+            <div class="mb-3">
+              <label for="password" class="form-label">Password</label>
+              <input type="password" class="form-control" id="password" name="password">
+            </div>
+            <button type="submit" class="btn btn-primary">Login</button>
+            <p class="mt-2" style="font-size: 18px;">New User? Register <a href="{% url 'register' %}">Here</a></p>
+        </form>
+    </div>
+</div>
+
+
+{% endblock %}

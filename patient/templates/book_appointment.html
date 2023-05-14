@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block extrahead %} 
+    <link rel="stylesheet" type="text/css" href="{% static 'css/patient-styles.css' %}">
+    <style>
+        .info-display {
+            width: 25%;
+        }
+
+        .appointment-display {
+            width: 50%;
+        }
+
+        .appointment-data-display {
+            width: 75%;
+        }
+
+        @media screen and (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+            }
+
+            .info-display {
+                width: 100%;
+            }
+
+            .appointment-display {
+                width: 100%;
+            }
+
+            .appointment-data-display {
+                width: 100%;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+<div class="navbar-container">
+    {% include 'patient_page_navbar.html' %}
+</div>
+
+
+<div class="d-flex justify-content-center main-container mx-4 main-container">
+    <div class="info-display">
+        <p class="my-0" style="font-size: 17px;font-weight: 500;">Dr. {{doctor.first_name}} {{doctor.last_name}}</p>
+        <p class="my-0" style="font-size: 15px;">{{doctor.email}}</p>
+        <p class="my-0" style="font-size: 15px;">No. of patients handled - {{unique_patient_count}}</p>
+        <p class="my-0" style="font-size: 15px;">No. of cases - {{total_appointment_count}}</p>
+    </div>
+    <div class="appointment-display">
+        <p style="font-size: 22px;">Book Appointment</p>
+        <div class="appointment-data-display d-flex flex-column align-items-center mt-4" >
+            <div class="main-container-left w-100">
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label style="font-size: 17px;font-weight: 500;" for="selected_date">Select a date:</label>
+                        <input style="font-size: 17px;" type="date" class="form-control mt-2" id="selected_date" name="selected_date" value="{{ selected_date }}" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-2" style="font-size: 14px;">View Appointments</button>
+                </form>
+             </div>
+             <div class="main-container-right mt-4 w-100 pt-4" style="border-top: 1px solid lightgray;">
+                {% if appointments %}
+                <p style="font-size: 17px;font-weight: 500;" class="my-0" >Available Appointments for {{ selected_date }}</p>
+                <div class="d-none d-md-block mt-4">
+                    <table class="table">
+                        <thead>
+                            <tr style="font-size: 15px;color: rgb(113, 112, 112);">
+                                <th style="text-align: center;">Time</th>
+                                <th style="text-align: center;">Doctor</th>
+                                <th style="text-align: center;">Book Appointment</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for appointment in appointments %}
+                            <tr style="font-size: 16px;">
+                                <td align="center">{{ appointment.time }}</td>
+                                <td align="center">{{ appointment.doctor_id }}</td>
+                                <td align="center">
+                                    <form method="POST">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="appointment_id" value="{{ appointment.id }}">
+                                        <button style="font-size: 12px;" type="submit" class="btn btn-primary">Book Appointment</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="d-block d-md-none mt-3">
+                    {% for appointment in appointments %}
+                        <div class="border rounded p-2">
+                            <p class="m-0">{{ appointment.doctor_id }}</p>
+                            <p class="m-0">{{ appointment.time }}</p>
+                            
+                            <form method="POST" class="mt-2">
+                                {% csrf_token %}
+                                <input type="hidden" name="appointment_id" value="{{ appointment.id }}">
+                                <button type="submit" class="btn btn-primary">Book Appointment</button>
+                            </form>
+                        </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="display-heading" style="font-size: 17px;font-weight: 500;" class="my-0" >No Appointments Available for {{ selected_date }}</p>
+                {% endif %}
+            </div>
+        </div>
+        
+         
+    </div>
+    
+    
+    
+    
+    
+</div>
+{% endblock %}

@@ -1,0 +1,26 @@
+{% extends 'patient_navbar.html' %}
+
+{% block content %}
+    <div class="mt-4">
+        <div class="card">
+            <div class="card-header">
+                <h5>Dr. {{doctor.name}}</h5>
+            </div>
+            <div class="card-body">
+                <p style="padding: 0; margin: 0;"><span style="font-weight: 500; font-size:18px">Email:</span> <span style="font-size: 16px;">{{doctor.email}}</span></p>
+                <p style="padding: 0; margin: 0;"><span style="font-weight: 500; font-size:18px">Specialization:</span> <span style="font-size: 16px;">{{doctor.specialization}}</span></p>
+                <p style="padding: 0; margin: 0 0 40px 0;"><span style="font-weight: 500; font-size:18px">Address:</span> <span style="font-size: 16px;">{{doctor.address}}</span></p>
+
+                <div>
+                    <span style="font-weight: 500; font-size: 25px;">Book an appointment</span>
+                    <p style="font-size: 15px; color: blue;">Use the following form to select a date and request an appointment</p>
+
+                    <form class="d-flex align-items-center">
+                        <input class="form-control" type="date" style="margin-right:15px; width: 200px" name="appointment_date" min={{min_date}} value={{min_date}} max={{max_date}}>
+                        <input type="submit" value="Submit" class="btn btn-primary">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

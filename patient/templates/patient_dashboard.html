@@ -1,0 +1,282 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block styles %} 
+<style>
+    .navbar-container {
+        padding: 0px 0px;
+    }
+    
+    .main-container-curousal {
+        display: none;
+        margin-top: 80px;
+        margin-bottom: 40px;
+    }
+    
+    .main-container {
+        margin-top: 80px;
+        margin-bottom: 40px;
+    }
+    
+    .main-container-curousal p {
+        margin: 0;
+        padding: 0;
+    }
+    
+    .appointments-link {
+        text-align: right;
+    }
+    
+    .main-container-table {
+        overflow: hidden;
+    }
+    
+    .search-contnainer {
+        display: none;
+    }
+    
+    .message-container span{
+        font-weight: 500;
+        color: rgb(103, 103, 103);
+    }
+    
+    .details-container p{
+        margin: 0;
+        font-size: 18px;
+    }
+    
+    .insurance-display p{
+        margin: 0;
+    }
+    
+    .insurance-detail {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        width: 50%;
+    }
+    
+    /* */
+    
+    
+    .appointments-column {
+        float: left;
+        width: 20%;
+        margin-right: 10px;
+    }
+    
+    .appointments-row:after {
+        content: "";
+        display: block;
+        clear: both;
+    }
+    
+    .mobile-list-view {
+        display: none;
+    }
+      
+    .mobile-list-view p {
+        margin: 0;
+    } 
+    
+    .display-heading {
+        font-size: 22px;
+    }
+    
+    @media (min-width: 769px) {
+        .navbar-container {
+            padding: 0px 0px;
+        }
+    
+        .main-container-table {
+            width: 90%;
+            margin: auto;
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .main-container-table {
+            overflow: auto;
+        }
+    
+        .message-container {
+            display: none;
+        }
+    
+        .main-container-curousal {
+            display: block;
+        }
+    
+        .profile {
+            display: none;
+        }
+    
+        .navbar-search {
+            display: none;
+        }
+    
+        .search-contnainer {
+            display: block;
+        }
+    
+        .appointments-row {
+            padding-bottom: 10px;
+        } 
+    
+        .appointments-column {
+            width: 100%;
+            margin-top: 30px;
+            box-shadow: 3px 3px 8px 1px black;
+        } 
+    
+        .main-container-left {
+            margin-top: 10px;
+        }
+    
+        .main-container-right {
+            margin-top: 20px;
+        }
+    
+        .non-mobile-list-view {
+            display: none;
+        }
+    
+        .mobile-list-view {
+            display: block;
+        }
+    
+        .display-heading {
+            font-size: 18px;
+        }
+    }
+    
+    
+    
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-large-screen">
+    <div class="navbar-container">
+        {% include 'patient_page_navbar.html' %}
+    </div>
+
+    <div class="main-container">
+        <div class="main-container-curousal mx-2 mb-4">
+            {% if appointments %} 
+            <p style="font-size: 16px;">You have {{total_appointments}} appointments</p>
+                <div id="carouselExampleControls" class="carousel slide border rounded mt-2 p-2" data-bs-ride="carousel">
+                    
+                    <div class="carousel-inner px-4">
+                      {% for appointment in appointments %}
+                      <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                        <h6 style="margin: 0;">{{ appointment.date }}</h5>
+                        <p style="margin: 10px 0px;font-size: 15px;">{{ appointment.time }}</p>
+                      </div>
+                      {% endfor %}
+                    </div>
+                    <button class="carousel-control-prev" role="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
+                      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                      <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
+                      <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                   
+                    </button>
+                  </div>
+                  <p class="appointments-link mt-2"><a class="text-decoration-none" href="{% url 'patient_appointment' %}">View All</a></p>
+            {% endif %}
+           
+        </div>
+    
+        <!-- <div class="mx-2 search-contnainer">
+            <!-- <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
+                <input type="search" class="form-control" placeholder="Search..." aria-label="Search">
+            </form> -->
+            <!-- <form>
+                <input type="search" name="q" value={{query}} class="form-control" placeholder="..." >
+                <input type="submit" value="Search">
+            </form>
+            
+        </div> --> 
+        
+
+        <div style="width: 90%;margin: auto" class="insurance-display">
+            <p style="font-weight: 500; color: rgb(103, 103, 103);">Insurances Purchased </p>
+            <p>You have purchased {{purchased_insurances}} insurances</p>
+            <p>To view them <a href="{% url 'all_insurances' %}">click here</a></p>
+        </div>
+    
+        <div class="main-container-table mt-4">
+            <div class="row mx-0">
+                <div class="col-12 col-md-12 col-lg-9">
+                    <p style="font-weight: 500; color: rgb(103, 103, 103);">Doctors </p>
+                    <div class="d-flex w-100">
+                        <form method="POST" action="" class="d-flex w-100">
+                            {% csrf_token %}
+                            <input type="search" name="q" class="form-control" placeholder="Search by Name...">
+                            <input type="submit" value="Search" style="font-size: 16px;">
+                        </form>
+                        <form method="POST" action="">
+                            {% csrf_token %}
+                            <input type="hidden" name="clear" value="clear" class="form-control" placeholder="Search..." >
+                            <input type="submit" value="Clear" style="font-size: 16px;height: 100%;">
+                        </form>
+                    </div>
+                    
+                    <div   style="overflow: auto;">
+                        <table class="table table-hover mt-4 mx-md-auto">
+                
+                            <thead>
+                            <tr>
+                                <th style="font-size: 15px; color: rgb(136, 136, 136)" scope="col" colspan="2">Name</th>
+                                <th class="d-none d-md-table-cell" style="font-size: 15px; color: rgb(136, 136, 136)" scope="col">Email</th>
+                                <th style="font-size: 15px; color: rgb(136, 136, 136);text-align: center;" scope="col">Booking</th>
+                                
+                            </tr>
+                            </thead>
+                            <tbody>
+                            
+                            
+                            {% for doctor in doctors %}
+                                <tr style="font-size: 16px;">
+                                    <td colspan="2">
+                                        {{doctor.first_name}} {{doctor.last_name}}
+                                    </td>
+                                    <td class="d-none d-md-table-cell">{{doctor.email}}</td>
+                                    <td style="text-align: center;">
+                                        <form method="POST">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="doctor_id" value="{{ doctor.id }}">
+                                            <button type="submit" class="btn btn-primary appointment-button" style="font-size: 12px;">Book Appointment</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                </div>
+                <div class="col message-container">
+                    <span>Upcoming Appointments</span>
+                    {% if appointments %} 
+                        <!-- You have {{total_appointments}} -->
+                        {% for appointment in appointments %} 
+                            <div class="border rounded p-2 mt-2 details-container">
+                                <p>Doctor - {{appointment.doctor_id.first_name}} {{appointment.doctor_id.last_name}}</p>
+                                <p>Details - {{appointment.date}} - {{appointment.time}}</p>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p style="font-size: 14px; font-weight: 500;">You dont have any upcoming appointments</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div> 
+    </div>
+    
+</div>
+    
+    
+{% endblock %}

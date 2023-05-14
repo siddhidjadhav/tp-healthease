@@ -1,0 +1,181 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block extrahead %} 
+    <link rel="stylesheet" type="text/css" href="{% static 'css/patient-styles.css' %}">
+    <style>
+        .table-container {
+            max-height: 160px;
+            overflow: auto;
+        }
+    
+        .expand-table {
+            height: 500px;
+            overflow-y: auto;
+        }
+
+        .table-responsive {
+            height: 200px;
+            overflow-y: auto;
+            padding: 0;
+            padding: 0px 10px;
+        }
+
+        .table-responsive thead th {
+            position: sticky; /* make the heading row sticky */
+            top: 0; /* position the heading row at the top */
+            z-index: 1; /* make sure the heading row is on top of the table cells */
+            background-color: #fff; 
+        }
+
+        .expand-table thead th {
+            position: sticky; /* make the heading row sticky */
+            top: 0; /* position the heading row at the top */
+            z-index: 1; /* make sure the heading row is on top of the table cells */
+            background-color: #fff; 
+        }
+
+    </style>
+{% endblock %}
+
+
+{% block content %}
+<div>
+    <div class="navbar-container">
+        {% include 'patient_page_navbar.html' %}
+    </div>
+    <div class="mx-5 main-container">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <p style="font-weight: 500; color: rgb(103, 103, 103);margin:0">Purchased Insurances </p>
+                {% if not purchased_insurance_list %} 
+                <p class="my-0">No insurances Purchased</p>
+                {% endif %}
+            </div>
+            <div>
+                {% if purchased_insurance_list_count > 3 %} 
+                    <button id="expand">Expand</button>
+                {% endif %}
+            </div>
+            
+        </div>
+        
+        <div class="row my-4">
+            {% if purchased_insurance_list %}
+            <div class="table-responsive"  id="table-container">
+               
+                <table class="table table-hover mx-auto">
+            
+                    <thead>
+                    <tr>
+                        <th style="font-size: 15px; color: rgb(136, 136, 136)" scope="col" colspan="2">Name</th>
+                        <th style="font-size: 15px; color: rgb(136, 136, 136)" scope="col" colspan="2">Provider Details</th>
+                        <th style="font-size: 15px; color: rgb(136, 136, 136)" scope="col" colspan="2">Date Purchased</th>
+                        <th style="font-size: 15px; color: rgb(136, 136, 136)" scope="col" colspan="2">Status</th>
+                        
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <div>
+                        {% for insurance in purchased_insurance_list %}
+                        <tr style="font-size: 16px;">
+                            <td colspan="2" scope="col">
+                                {{insurance.insuranceid.name}}
+                            </td>
+                            <td colspan="2" scope="col">
+                                <p style="margin: 0;">{{insurance.provider.first_name}} {{insurance.provider.last_name}}</p>
+                                <p  style="margin: 0;">{{insurance.provider.email}}</p>
+                            </td>
+                            <td colspan="2" scope="col">
+                                {{insurance.datepurchased}}
+                            </td>
+                            <td colspan="2" scope="col">
+                                {% if insurance.claim == 'notclaimed' %}
+                                <form method="POST">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="claimrequested" value="{{ insurance.id }}">
+                                    <button type="submit" class="btn btn-primary appointment-button" style="font-size: 12px;">Claim</button>
+                                </form>
+                                {% elif insurance.claim == 'accepted' %}
+                                <p class="text-success" style="font-weight: bold; font-size: 15px;">Claim Approved</p> 
+                                {% elif insurance.claim == 'requested' %} 
+                                <p class="my-0">Awaiting Approval</p>
+                                <form method="POST" class="mt-1">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="cancelrequest" value="{{ insurance.id }}">
+                                    <button type="submit" class="btn btn-danger appointment-button" style="font-size: 12px;">Cancel Request</button>
+                                </form>
+                                {% elif insurance.claim == 'cancelled' %}
+                                <p class="my-0 text-danger">Claim Denied</p>
+                                <p class="my-0">Reason - {{insurance.cancellationreason}}</p> 
+                                <form method="POST" class="mt-1">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="claimrequested" value="{{ insurance.id }}">
+                                    <button type="submit" class="btn btn-primary appointment-button" style="font-size: 12px;">Re Claim</button>
+                                </form>
+                                {% else %} 
+                                <p>Claimed</p>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </div>
+                    
+                    
+                    </tbody>
+                </table>
+                
+            </div>
+            {% endif %} 
+                
+        </div>
+
+        <div>
+            <h3 style="font-weight: 500; color: rgb(103, 103, 103);">Insurances..</h3>
+            <table class="table table-hover mt-4">
+                <thead>
+                    <tr>
+                        
+                        <th style="font-size: 15px; color: rgb(136, 136, 136)" scope="col" colspan="2">
+                            Name
+                        </th>
+                        <th style="font-size: 15px; color: rgb(136, 136, 136)" scope="col" colspan="2">
+                            Provider Details
+                        </th>
+                        <th style="font-size: 15px; color: rgb(136, 136, 136)" scope="col" colspan="2">
+                            Description
+                        </th>
+                        <th style="font-size: 15px; color: rgb(136, 136, 136)" scope="col" colspan="2">
+                            Action
+                        </th>
+                    </tr>
+                </thead>
+                
+                <tbody>
+                    {% for insurance in insurance_list %}
+                    <tr  style="font-size: 16px;">
+                        
+                        <td colspan="2">
+                            {{ insurance }} <br/> 
+                        </td>
+                        <td colspan="2" style="list-style: none;">
+                            <li>{{insurance.provider.first_name}} {{insurance.provider.last_name}}</li>
+                            <li>{{insurance.provider.email}}</li>
+                            
+                        </td>
+                        <td colspan="2">
+                            {{insurance.description}}
+                        </td>
+                        <td colspan="2" align="left">
+                            <a class="btn btn-outline-secondary btn-sm" style="text-decoration: none; color: black;" href="{% url 'insurance_description' insurance.id %}">View</a> <br/> 
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>     
+            </table>          
+        </div>
+    </div>
+</div>
+
+
+    
+{% endblock %}

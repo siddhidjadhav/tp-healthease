@@ -1,0 +1,99 @@
+{% extends 'doctor_base.html' %} 
+{% load static %}
+{% block extrahead %} 
+    <link rel="stylesheet" href="{% static 'css/doctor_styles_v1.css' %}">
+    <style>
+        .main-container {
+            width: 90%;
+            margin: auto;
+            margin-top: 30px;
+        }
+
+        
+        .prescription-container {
+            box-shadow: 1px 1px 2px 1px black;
+            background-color:rgb(246, 251, 251);
+        }
+
+        .prescription-form label {
+            font-size: 16px;
+            color: rgb(60, 60, 60);
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+
+        .prescription-form .section {
+            margin-bottom: 20px;
+        }
+
+
+    </style>
+{% endblock %}
+
+
+{% block content %} 
+    <div>
+        <div class="main-container">
+            <div>
+                <h3 class="my-0">{{appointment.patient_id.first_name}} {{appointment.patient_id.last_name}}</h3>
+                <p class="my-0">{{appointment.patient_id.email}}</p>
+            </div>
+            
+            <div class="my-4 border p-4 d-flex prescription-container">
+                <div class=" w-50">
+                    <form method="POST" class="prescription-form">
+                        {% csrf_token %}
+                        <div class="section">
+                            <label for="status">Appointment Status:</label><br>
+                            <select id="status" name="status">
+                                <option value="closed" selected>Closed</option>
+                                <option value="followup">Follow-Up</option>
+                                
+                            </select>
+                        </div>
+                        <div class="section">
+                            <label for="status">Prescription:</label><br>
+                            <textarea maxlength="200" autofocus style="font-size: 16px;" cols="40" rows="5" name="prescription"></textarea>
+                        </div>
+                        <input type="submit" value="Save">
+                    </form>
+                </div>
+                <div class="w-50">
+                    Previous Appointment Prescription
+                </div>
+            </div>
+            
+            
+            <div class="mt-4">
+                <p>Appointment History</p>
+                {% if appointment_history %}
+                <table class="table table-hover mt-4">
+                    <thead>
+                    <tr>
+                        <th style="font-size: 15px; color: rgb(136, 136, 136)" scope="col">Date</th>
+                        <th style="font-size: 15px; color: rgb(136, 136, 136)" scope="col">Prescription</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    
+                    {% for appointment in appointment_history %}
+                        <tr style="font-size: 16px;">
+                            <td>
+                                {{ appointment.date }}
+                            </td>
+                            <td>
+                                {{appointment.prescription}}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                {% else %} 
+                <p>No previous appointment details available</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    
+{% endblock %}

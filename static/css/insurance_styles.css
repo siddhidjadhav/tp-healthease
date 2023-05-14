@@ -1,0 +1,9 @@
+.main-container {
+    margin: auto;
+    width: 90%;
+}
+
+.cancel-request-form {
+    display: none;
+    background-color: aqua;
+}

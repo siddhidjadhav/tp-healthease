@@ -1,0 +1,175 @@
+{% extends 'doctor_base.html' %} 
+{% load static %}
+{% block extrahead %} 
+    <link rel="stylesheet" href="{% static 'css/doctor_styles_v1.css' %}">
+{% endblock %}
+
+{% block styles %} 
+
+<style>
+
+
+    .small-blocks-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+    }
+
+    .small-blocks {
+        border: 1px solid lightgray;
+        box-shadow: 1px 2px 5px 2px lightgray;
+        padding: 20px;
+    }
+
+    .small-blocks p {
+        margin: 0px;
+    }
+
+    .small-blocks-title {
+        font-size: 16px;
+        font-weight: bold;
+        color: rgb(112, 111, 111);
+        text-align: center;
+    }
+
+    .small-blocks-value {
+        font-size: 28px;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    .model-appointment-details p{
+        margin: 0;
+        padding: 0;
+        font-size: 16px;
+    }
+
+    
+
+</style>
+{% endblock %}
+
+{% block content %} 
+    <div>
+        <div class="main-container">
+            <div style="width: 90%; margin:0px auto">
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="form-group mt-2">
+                        <label for="date">Date:</label>
+                        <input type="date" class="form-control" id="date" name="date">
+                    </div>
+                    <div class="form-group mt-2">
+                        <label for="time">Time:</label>
+                        <input type="time" class="form-control" id="time" name="time">
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-4" style="font-size: 16px;">Create Appointment</button>
+                </form>
+            </div>
+            
+            <div style="width: 90%;margin: 20px auto;">
+        
+                {% if appointments %} 
+                Upcoming Appointments
+                <table class="table table-hover mt-4">
+                    <thead>
+                    <tr>
+                        <!-- <th style="font-size: 15px; color: rgb(136, 136, 136)" scope="col" colspan="2">Name</th>
+                        <th style="font-size: 15px; color: rgb(136, 136, 136)" scope="col">Email</th> -->
+                        <th style="font-size: 15px; color: rgb(136, 136, 136)" scope="col">Date</th>
+                        <th style="font-size: 15px; color: rgb(136, 136, 136)" scope="col">Time</th>
+                        <th style="font-size: 15px; color: rgb(136, 136, 136)" scope="col">Booking</th>
+                        <th style="font-size: 15px; color: rgb(136, 136, 136)" scope="col"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    
+                    
+                    {% for appointment in appointments %}
+                        <tr style="font-size: 16px;">
+                            <!-- <td colspan="2">
+                                {{ appointment.patient_id.first_name }} {{ appointment.patient_id.last_name }}
+                            </td>
+                            <td>{{appointment.patient_id.email}}</td> -->
+                            <td>{{appointment.date}}</td>
+                            <td>{{appointment.time}}</td>
+                            <td>
+                                {% if not appointment.patient_id %} 
+                                        <span style="color: rgb(58, 253, 58); font-weight: bold;">Not Booked</span>
+                                    {% endif %}
+                                {% if appointment.patient_id %} 
+                                    <span style="color: rgb(236, 29, 29); font-weight: bold;">Booked</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <form method="POST">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="appointment_id" value="{{ appointment.id }}">
+                                    {% if appointment.patient_id %} 
+                                        <button type="button" class="btn btn-primary appointment-button" style="font-size: 12px;" data-bs-toggle="modal" data-bs-target="#myModal">
+                                            Cancel
+                                        </button>
+                                    {% else %} 
+                                        <button type="submit" class="btn btn-primary appointment-button" style="font-size: 12px;">Cancel</button>
+                                    {% endif %}
+                                    
+                                </form>
+                            </td>
+                        </tr>
+                        <div class="modal fade" tabindex="-1" id="myModal">
+                            <div class="modal-dialog">
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <h5 class="p-2 modal-title text-primary-danger bg-danger-subtle border-danger-subtle rounded-3 bg-danger">Warning</h5>
+                                  <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
+                                </div>
+                                <div class="modal-body">
+                                  <p style="font-size: 16px;">Appointment is already booked. Do you still want to cancel it?</p>
+                                  <p style="margin: 0;">Appointment details:</p>
+                                  <div style="padding: 10px 20px;" class="model-appointment-details">
+                                    <p>Patient - {{appointment.patient_id.first_name}} {{appointment.patient_id.last_name}}</p>
+                                    <p>Date - {{appointment.date}}</p>
+                                    <p>Time - {{appointment.time}}</p>
+                                  </div>
+                                  
+                                </div>
+                                <div class="modal-footer">
+                                  <button type="button" class="btn btn-secondary appointment-button" style="font-size: 12px;" data-bs-dismiss="modal">Close</button>
+                                  <form method="POST">
+                                    {% csrf_token %}
+                                        <input type="hidden" name="appointment_id" value="{{ appointment.id }}">
+                                        <button type="submit" class="btn btn-primary appointment-button" style="font-size: 12px;">Cancel</button>
+                                </form>
+                                </div>
+                              </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                
+                
+                  
+                {% else %}
+                <div class="mt-4">
+                    <p style="color: rgb(136, 136, 136); font-size: 25px;font-weight: bold;">No Appointments Created</p>
+                </div>
+                {% endif %}
+            </div>  
+        </div>
+    </div>
+    
+    
+{% endblock %}
+
+{% block extrascripts %} 
+<script>
+    <!-- const myModal = document.getElementById('myModal')
+    const myInput = document.getElementById('myInput')
+    
+    myModal.addEventListener('shown.bs.modal', () => {
+      myInput.focus()
+    }) -->
+</script>
+
+{% endblock %}

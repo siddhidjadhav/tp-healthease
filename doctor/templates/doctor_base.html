@@ -1,0 +1,105 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/x-icon" href="{% static 'healthcarelogo.png' %}">
+    <title style="color: blue;">HealthinessEase</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    {% block extrahead %} 
+      
+    {% endblock %}
+    {% block styles %} 
+    <style>
+
+    </style>
+    {% endblock %}
+    <style>
+      .left-container {
+        position: fixed;
+        background-color: rgb(237, 240, 241);
+        padding: 20px 0px;
+        width: 300px;
+        top: 0;
+        bottom: 0;
+        margin: 0;
+      }
+      .left-container div,p {
+        margin: 0;
+      }
+      .right-container {
+        left: 300px;
+        right: 0;
+      }
+      .page-navbar {
+        display: none; 
+      }
+      .left-container a {
+        text-decoration: none;
+        color: black;
+      }
+      .left-container li {
+        list-style: none;
+      }
+      .page-navbar-items li {
+        padding: 10px 20px;
+        font-size: 18px;
+      }
+      .logout-button {
+        position: fixed;
+        bottom: 20px;
+      }
+      .logout-button li {
+        padding: 0px 20px;
+      }
+
+      @media (max-width: 768px) {
+        .left-container {
+          display: none;
+        }
+        .right-container {
+          top: 70px;
+          left: 0;
+          right: 0;
+        }
+        .page-navbar {
+          display: block;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    
+    <div class="page-navbar">
+      {% include 'doctor_page_navbar.html' %}
+    </div>
+    <div class="position-relative">
+      <div class="left-container ">
+        <div>
+          <li class="px-2">
+            <h3>HealthinessEase</h3>
+          </li>
+        </div>
+        <div class="mt-5 page-navbar-items">
+          <li {% if request.path == '/doctor/dashboard' %}style="border-right:5px solid aqua;font-weight:bold;"{% endif %}><a href="{% url 'doctor_dashboard' %}">Dashboard</a></li>
+          <li {% if request.path == '/doctor/create_appointment' %}style="color: white;border-right:5px solid aqua;font-weight:bold;"{% endif %}><a style="text-decoration: none; " href="{% url 'create_appointment' %}">Create Appointment</a></li>
+          <li {% if request.path == '/doctor/all_appointment' %}style="color: white;border-right:5px solid aqua;font-weight:bold;"{% endif %}><a style="text-decoration: none; " href="{% url 'all_appointment' %}">Appointment Records</a></li> 
+          <div class="logout-button">
+            <li><h3 style="margin: 0;">Dr.</h3></li>
+            <li style="font-size: 20px; font-weight: 500;margin-bottom: 20px;">{{request.user.first_name}} {{request.user.last_name}}</li>
+            <li><a href="{% url 'logout' %}">Logout</a></li>
+          </div>
+        </div>
+      </div>
+      <div class="position-absolute right-container">
+        {% block content %} 
+        {% endblock %}
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
+    {% block extrascripts %} 
+    {% endblock %}
+  </body>
+</html>

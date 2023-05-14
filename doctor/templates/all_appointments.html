@@ -1,0 +1,62 @@
+{% extends 'doctor_base.html' %}
+{% load static %}
+{% block extrahead %} 
+    <link rel="stylesheet" href="{% static 'css/doctor_styles_v1.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="main-container">
+        <p>Appointment History</p>
+        <div class="" style="height: 490px;">
+            <table class="table table-hover mt-4">
+                <thead>
+                <tr>
+                    <th style="font-size: 15px; color: rgb(136, 136, 136)" scope="col">Date</th>
+                    <th style="font-size: 15px; color: rgb(136, 136, 136)" scope="col">Time</th>
+                    <th style="font-size: 15px; color: rgb(136, 136, 136)" scope="col">Patient</th>
+                </tr>
+                </thead>
+                <tbody>
+                
+                {% for appointment in appointments %}
+                    <tr style="font-size: 16px;">
+                        <td>
+                            {{ appointment.date }}
+                        </td>
+                        <td>
+                            {{appointment.time}}
+                        </td>
+                        <td>
+                            {% if appointment.status == 'open' %} 
+                            Not Booked 
+                            {% else %}
+                            {{appointment.patient_id.first_name}}
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        
+        <div class="pagination pagination-container d-flex justify-content-center">
+            <span>
+                {% if appointments.has_previous %}
+                    <a href="?page=1">&laquo; first</a>
+                    <a href="?page={{ appointments.previous_page_number }}">previous</a>
+                {% endif %}
+    
+                <span>
+                    Page {{ appointments.number }} of {{ appointments.paginator.num_pages }}.
+                </span>
+    
+                {% if appointments.has_next %}
+                    <a href="?page={{ appointments.next_page_number }}">next</a>
+                    <a href="?page={{ appointments.paginator.num_pages }}">last &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
+    </div>
+    
+{% endblock %}

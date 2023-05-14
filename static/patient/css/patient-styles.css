@@ -1,0 +1,148 @@
+.navbar-container {
+    padding: 0px 0px;
+}
+
+.main-container-curousal {
+    display: none;
+    margin-top: 80px;
+    margin-bottom: 40px;
+}
+
+.main-container {
+    margin-top: 80px;
+    margin-bottom: 40px;
+}
+
+.main-container-curousal p {
+    margin: 0;
+    padding: 0;
+}
+
+.appointments-link {
+    text-align: right;
+}
+
+.main-container-table {
+    overflow: hidden;
+}
+
+.search-contnainer {
+    display: none;
+}
+
+.message-container span{
+    font-weight: 500;
+    color: rgb(103, 103, 103);
+}
+
+.details-container p{
+    margin: 0;
+    font-size: 18px;
+}
+
+.insurance-display p{
+    margin: 0;
+}
+
+.insurance-detail {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 50%;
+}
+
+/* */
+
+
+.appointments-column {
+    float: left;
+    width: 20%;
+    margin-right: 10px;
+}
+
+.appointments-row:after {
+    content: "";
+    display: block;
+    clear: both;
+}
+
+.mobile-list-view {
+    display: none;
+}
+  
+.mobile-list-view p {
+    margin: 0;
+} 
+
+.display-heading {
+    font-size: 22px;
+}
+
+@media (min-width: 769px) {
+    .navbar-container {
+        padding: 0px 0px;
+    }
+
+    .main-container-table {
+        width: 90%;
+        margin: auto;
+    }
+}
+
+@media (max-width: 768px) {
+    .main-container-table {
+        overflow: auto;
+    }
+
+    .message-container {
+        display: none;
+    }
+
+    .main-container-curousal {
+        display: block;
+    }
+
+    .profile {
+        display: none;
+    }
+
+    .navbar-search {
+        display: none;
+    }
+
+    .search-contnainer {
+        display: block;
+    }
+
+    .appointments-row {
+        padding-bottom: 10px;
+    } 
+
+    .appointments-column {
+        width: 100%;
+        margin-top: 30px;
+        box-shadow: 3px 3px 8px 1px black;
+    } 
+
+    .main-container-left {
+        margin-top: 10px;
+    }
+
+    .main-container-right {
+        margin-top: 20px;
+    }
+
+    .non-mobile-list-view {
+        display: none;
+    }
+
+    .mobile-list-view {
+        display: block;
+    }
+
+    .display-heading {
+        font-size: 18px;
+    }
+}
+
+

@@ -1,0 +1,251 @@
+
+{% extends 'doctor_base.html' %}
+{% load static %}
+{% block extrahead %} 
+    <link rel="stylesheet" href="{% static 'css/doctor_styles.v1.css' %}">
+{% endblock %}
+
+{% block styles %} 
+
+<style>
+    .dashboard-container {
+        margin-top: 30px;
+        margin: 0px auto;
+        width: 90%;
+    }
+
+    .head-container {
+        padding: 20px 0px;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .date-display-container p{
+        margin: 0px;
+    }
+
+    .date-display-header {
+        font-size: 14px;
+        text-align: right;
+        font-weight: 500;
+        color: rgb(128, 128, 128);
+    }
+    .date-display-data {
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .small-blocks-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        gap: 30px;
+        
+        
+    }
+
+    .small-blocks {
+        border: 1px solid lightgray;
+        box-shadow: 1px 2px 5px 2px lightgray;
+        padding: 20px;
+        flex-grow: 1;
+    }
+
+    .small-blocks p {
+        margin: 0px;
+    }
+
+    .small-blocks-title {
+        font-size: 16px;
+        font-weight: bold;
+        color: rgb(112, 111, 111);
+        text-align: center;
+    }
+
+    .small-blocks-value {
+        font-size: 28px;
+        font-weight: bold;
+        text-align: center;
+    }
+</style>
+
+
+{% endblock %}
+
+
+{% block content %}
+    <div class="dashboard-container">
+        <div class="head-container">
+            <div>
+                <p>Dashboard</p>
+            </div>
+            <div class="date-display-container">
+                <p class="date-display-header">Today's Date</p>
+                <p class="date-display-data">{{todays_date |date:"Y-m-d"}}</p>
+            </div>
+        </div>
+
+        {{message}}
+        <div class="small-blocks-container d-none d-md-flex">
+            <div class="small-blocks">
+                <p class="small-blocks-title">Total Appointments</p>
+                <p class="small-blocks-value"> {{total_appointments}}</p>
+            </div>
+            <div class="small-blocks">
+                <p class="small-blocks-title">Booked Appointments</p>
+                <p class="small-blocks-value"> {{booked}}</p>
+            </div>
+            <div class="small-blocks">
+                <p class="small-blocks-title">Not Booked Appointments</p>
+                <p class="small-blocks-value"> {{not_booked}}</p>
+            </div>
+        </div>   
+        
+        <!-- for mobile view only -->
+        <div class="d-md-none mx-4">
+            <div class="small-blocks d-flex justify-content-between align-items-center">
+                <p class="small-blocks-title">Total Appointments</p>
+                <p class="small-blocks-value"> {{total_appointments}}</p>
+            </div>
+            <div class="small-blocks d-flex justify-content-between align-items-center">
+                <p class="small-blocks-title">Booked Appointments</p>
+                <p class="small-blocks-value"> {{booked}}</p>
+            </div>
+            <div class="small-blocks d-flex justify-content-between align-items-center">
+                <p class="small-blocks-title">Not Booked Appointments</p>
+                <p class="small-blocks-value"> {{not_booked}}</p>
+            </div>
+        </div> 
+
+        <div class="mt-4">
+            
+            {% if appointment_for_today %}
+            <p style="font-size:22px;font-weight: bold; color: rgb(136, 136, 136);">Appointments for today</p>
+            <div class="d-none d-md-block">
+                <table class="table table-hover mt-4 ">
+                    <thead>
+                    <tr>
+                        <th style="font-size: 15px; color: rgb(136, 136, 136)" scope="col" colspan="2">Name</th>
+                        <th style="font-size: 15px; color: rgb(136, 136, 136)" scope="col">Email</th>
+                        <th style="font-size: 15px; color: rgb(136, 136, 136)" scope="col">Date</th>
+                        <th style="font-size: 15px; color: rgb(136, 136, 136)" scope="col">Time</th>
+                        <th style="font-size: 15px; color: rgb(136, 136, 136)" scope="col">Booking</th>
+                        <th style="font-size: 15px; color: rgb(136, 136, 136)" scope="col">Modify</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    
+                    
+                    {% for appointment in appointment_for_today %}
+                        <tr style="font-size: 16px;">
+                            <td colspan="2">
+                                {{ appointment.patient_id.first_name }} {{ appointment.patient_id.last_name }}
+                            </td>
+                            <td>{{appointment.patient_id.email}}</td>
+                            <td>{{appointment.date}}</td>
+                            <td>{{appointment.time}}</td>
+                            <td>
+                                {% if appointment.status == "open" %} 
+                                        <span style="color: rgb(58, 253, 58); font-weight: bold;">Not Booked</span>
+                                    {% endif %}
+                                {% if appointment.status == "booked" %} 
+                                    <span style="color: rgb(236, 29, 29); font-weight: bold;">Booked</span>
+                                {% endif %}
+                                {% if appointment.status == "followup" %} 
+                                    <span style="color: rgb(29, 126, 236); font-weight: bold;">Follow Up</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <form method="POST">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="appointment_id" value="{{ appointment.id }}">
+                                    <button type="submit" class="btn btn-primary appointment-button" style="font-size: 12px;">Update</button>
+                                </form>
+                            </td>
+                            
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="d-md-none">
+                <table class="table table-hover mt-4">
+                    <thead>
+                    <tr>
+                        <th style="font-size: 15px; color: rgb(136, 136, 136)" scope="col" colspan="2">Name</th>
+                        <th style="font-size: 15px; color: rgb(136, 136, 136)" scope="col">Time</th>
+                        <th style="font-size: 15px; color: rgb(136, 136, 136)" scope="col">Booking</th>
+                        <th style="font-size: 15px; color: rgb(136, 136, 136)" scope="col">Modify</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    
+                    
+                    {% for appointment in appointment_for_today %}
+                        <tr style="font-size: 16px;">
+                            <td colspan="2">
+                                {{ appointment.patient_id.first_name }} {{ appointment.patient_id.last_name }}
+                            </td>
+                            <td>{{appointment.time}}</td>
+                            <td>
+                                {% if appointment.status == "open" %} 
+                                        <span style="color: rgb(58, 253, 58); font-weight: bold;">Not Booked</span>
+                                    {% endif %}
+                                {% if appointment.status == "booked" %} 
+                                    <span style="color: rgb(236, 29, 29); font-weight: bold;">Booked</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <form method="POST">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="appointment_id" value="{{ appointment.id }}">
+                                    <button type="submit" class="btn btn-primary appointment-button" style="font-size: 12px;">Update</button>
+                                </form>
+                            </td>
+                            
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            {% else %}
+            <div class="mt-4">
+                <p style="color: rgb(136, 136, 136); font-size: 25px;font-weight: bold;">No Appointments for Today</p>
+            </div>
+            {% endif %}
+            <!-- <ul style="list-style: none;">
+                {% for appointment in appointment_for_today %}
+                <div style="border: 1px solid rgb(229, 227, 227);padding: 10px;">
+                    <div style="display: flex; justify-content: space-between;">
+                            <p style="margin: 0">
+                                {% if appointment.patient_id %} 
+                                    <span>Patient Name - {{ appointment.patient_id.first_name }} {{ appointment.patient_id.last_name }}</span>
+                                {% endif %}
+                            </p>
+                            <p style="margin: 0">
+                                Appointment Status - 
+                                {% if not appointment.patient_id %} 
+                                    <span style="color: rgb(58, 253, 58); font-weight: bold;">Not Booked</span>
+                                {% endif %}
+                                {% if appointment.patient_id %} 
+                                    <span style="color: rgb(236, 29, 29); font-weight: bold;">Booked</span>
+                                {% endif %}
+                            </p>
+                        
+                    </div>
+                    <p style="margin: 0">Date - {{ appointment.date }}</p>
+                    <p style="margin: 0">Time - {{ appointment.time }} </p>
+                </div>
+                <li>
+                    
+                    
+                    
+                </li>
+                {% endfor %}
+            </ul> -->
+        </div>
+        
+    </div>
+{% endblock %}

@@ -1,0 +1,52 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark px-2 fixed-top">
+    <a class="navbar-brand" href="#">HealthinessEase</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarText">
+      <ul class="navbar-nav ml-auto d-flex justify-content-between w-100">
+        <div class="navbar-nav">
+          {% if not request.path == '/patient/patient_appointment' %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'patient_appointment' %}">Appointments </a>
+          </li>
+          {% endif %}
+          {% if not request.path == '/patient/dashboard' %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'patient_dashboard' %}">Dashboard </a>
+          </li>
+          {% endif %}
+          {% if not request.path == '/patient/all_insurances' %}
+          <li class="nav-item active">
+            <a class="nav-link" href="{% url 'all_insurances' %}">Insurances</a>
+          </li>
+          {% endif %}
+        </div>
+        
+
+        <div  class="navbar-nav">
+          {% if not request.path == '/patient/profile' %}
+          <li class="nav-item active">
+            <a class="nav-link" href="{% url 'patient_profile' %}">Profile</a>
+          </li>
+          {% endif %}
+          
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'logout' %}">Logout </a>
+          </li>
+        </div>
+        
+      </ul>
+      
+
+      <!-- <div class="dropdown text-end profile">
+        <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+          <img src="https://github.com/mdo.png" alt="mdo" width="32" height="32" class="rounded-circle">
+        </a>
+        <ul class="dropdown-menu text-small">
+          <li><a class="dropdown-item" href="{% url 'patient_profile' %}">Profile</a></li>
+          <li><hr class="dropdown-divider"></li>
+          <li><a class="dropdown-item" href="{% url 'logout' %}">Sign out</a></li>
+        </ul>
+    </div> -->
+</nav>

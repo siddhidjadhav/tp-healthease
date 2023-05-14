@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block extrahead %} 
+{% load static %}
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <style>
+        
+
+    @media (min-width: 1200px) {
+        .desktop-container{
+            max-width: 25%;
+        }
+    }
+    </style>
+{% endblock %}
+
+
+{% block content %}
+<div>
+    {% include 'home_navbar.html' %}
+    <div class="mx-auto w-100 desktop-container container">
+        <div class="my-2">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        {{message}}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %} 
+            <h2>Register</h2>
+        </div>
+        <form class="mt-3" action="" method="POST">
+            {% csrf_token %}
+            <div class="mb-2">
+              <label for="username" class="form-label">Username</label>
+              <input type="text" class="form-control" id="username" name="username" aria-describedby="emailHelp" required>
+              <!-- <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div> -->
+            </div>
+			<div class="mb-2">
+				<label for="firstname" class="form-label">Firstname</label>
+				<input type="text" class="form-control" id="first_name" name="first_name" aria-describedby="emailHelp" required>
+				<!-- <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div> -->
+			  </div>
+			  <div class="mb-2">
+				<label for="lastname" class="form-label">Lastname</label>
+				<input type="text" class="form-control" id="lastname" name="last_name" aria-describedby="emailHelp" required>
+				<!-- <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div> -->
+			  </div>
+			  <div class="mb-2">
+				<label for="email" class="form-label">Email</label>
+				<input type="text" class="form-control" id="email" name="email" aria-describedby="emailHelp" required>
+				<!-- <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div> -->
+			  </div>
+            <div class="mb-2">
+              <label for="password" class="form-label">Password</label>
+              <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Register</button>
+            <p class="mt-2" style="font-size: 18px;">Already a User? Login <a href="{% url 'login' %}">Here</a></p>
+        </form>
+    </div>
+</div>
+
+
+{% endblock %}

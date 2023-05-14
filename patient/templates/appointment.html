@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block extrahead %} 
+    <link rel="stylesheet" type="text/css" href="{% static 'css/patient-styles.css' %}">
+{% endblock %}
+
+
+{% block content %}
+<div>
+    <div class="navbar-container">
+        {% include 'patient_page_navbar.html' %}
+    </div>
+    <div class="main-container px-2">
+        <p style="font-size: 28px; font-weight: 400">Booked Appointments</p>
+        {% if not appointments %} 
+            You have not booked any appointments!
+        {% endif %}
+
+        <div class="appointments-row">
+            {% for appointment in appointments %}
+                <div class="card appointments-column">
+                    <div class="card-header">
+                        <h6>Dr. {{appointment.doctor_id.first_name}}</h6>
+                    </div>
+                    <div class="card-body">
+                        <p style="font-size: 18px">Date: {{appointment.date}}</p>
+                        <p style="font-size: 18px">Time: {{appointment.time}}</p>
+                    </div>
+                    <div class="card-footer">
+                        <form action="" method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" value="{{appointment.id}}" name="appointment_id" >
+                            <button class="btn btn-danger">Cancel</button>
+                        </form>
+                    </div>
+                </div>
+            
+            {% endfor %}
+        </div>
+        
+        
+    </div>
+</div>
+    
+    
+{% endblock %}

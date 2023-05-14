@@ -1,0 +1,4 @@
+<div class="d-flex sidebar-container">
+      <li {% if request.path == '/doctor/dashboard' %}style="border-radius:40px;font-weight:bold;"{% endif %}><a style="text-decoration: none; color:black"  href="{% url 'doctor_dashboard' %}">Dashboard</a></li>
+      <li {% if request.path == '/doctor/create_appointment' %}style="color: white;border-radius:40px;font-weight:bold;"{% endif %}><a style="text-decoration: none; " href="{% url 'create_appointment' %}">Create Appointment</a></li>
+</div>

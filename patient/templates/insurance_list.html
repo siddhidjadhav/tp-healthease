@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block extrahead %} 
+    <link rel="stylesheet" type="text/css" href="{% static 'css/patient-styles.css' %}">
+    <style>
+        table {
+            font-size: 17px;
+        }
+    </style>
+{% endblock %}
+
+
+{% block content %}
+<div>
+    <div class="navbar-container">
+        {% include 'patient_page_navbar.html' %}
+    </div>
+    <div class="main-container px-2 mx-5">
+        <div>
+            <h3>Insurances..</h3>
+            <table class="table table-hover table-bordered mt-4">
+                <thead>
+                    <tr>
+                        
+                        <th scope="col">
+                            Name
+                        </th>
+                        <th scope="col">
+                            Provider Details
+                        </th>
+                        <th scope="col">
+                            Description
+                        </th>
+                        <th scope="col">
+                            Action
+                        </th>
+                    </tr>
+                </thead>
+                
+                <tbody>
+                    {% for insurance in insurance_list %}
+                    <tr>
+                        
+                        <td>
+                            {{ insurance }} <br/> 
+                        </td>
+                        <td style="list-style: none;">
+                            <li>{{insurance.provider.first_name}} {{insurance.provider.last_name}}</li>
+                            <li>{{insurance.provider.email}}</li>
+                            
+                        </td>
+                        <td>
+                            {{insurance.description}}
+                        </td>
+                        <td align="right">
+                            <a class="btn btn-outline-secondary btn-sm" style="text-decoration: none; color: black;" href="{% url 'insurance_description' insurance.id %}">View</a> <br/> 
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>     
+            </table>          
+        </div>
+        </div>
+        
+        
+        
+    </div>
+</div>
+    
+    
+{% endblock %}

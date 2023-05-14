@@ -1,0 +1,79 @@
+{% extends 'insurance_base.html' %}
+{% load static %}
+{% block extrahead %} 
+    <link rel="stylesheet" href="{% static 'css/insurance_styles.css' %}">
+{% endblock %}
+{% block content %}
+
+<div class="main-container">
+    <div class="card mt-5">
+        <h5 class="card-header">{{ insurance }}</h5>
+        <div class="card-body">
+            <h5 class="card-title"></h5>
+            <p class="card-text">
+                Description - {{insurance.description}}
+            </p>
+            <p class="card-text"></p>
+                Coverage - {{insurance.coverage}}
+            </p>
+            <!-- <a  href="#" class="btn btn-primary"></a> -->
+        </div>
+    </div>
+    <div>
+        {% if purchase_history %}
+        <p class="mt-4">Customers who have purchased this Insurance</p>
+        <div class="" style="overflow: auto;">
+            <table class="table table-hover mt-4">
+                <thead>
+                <tr>
+                    <th class="d-none d-md-table-cell" style="font-size: 15px; color: rgb(136, 136, 136)" scope="col" colspan="2">Name</th>
+                    <th class="d-none d-md-table-cell" style="font-size: 15px; color: rgb(136, 136, 136)" scope="col">Email</th>
+                    <th class="d-table-cell d-md-none" style="font-size: 15px; color: rgb(136, 136, 136)" scope="col" colspan="2">Customer Details</th>
+                    <th style="font-size: 15px; color: rgb(136, 136, 136)" scope="col">Purchase Date</th>
+                </tr>
+                </thead>
+                <tbody>
+                
+                
+                {% for purchases in purchase_history %}
+                    <tr style="font-size: 16px;">
+                        <td class="d-table-cell d-md-none" colspan="2">
+                            <p>{{ purchases.customer.first_name }} {{ purchases.customer.last_name }}</p>
+                            <p>{{purchases.customer.email}}</p>
+                        </td>
+                        <td class="d-none d-md-table-cell" colspan="2">
+                            {{ purchases.customer.first_name }} {{ purchases.customer.last_name }}
+                        </td>
+                        <td class="d-none d-md-table-cell">{{purchases.customer.email}}</td>
+                        <td>{{purchases.datepurchased}}</td>
+                        <!-- <td>{{appointment.time}}</td>
+                        <td>
+                            {% if appointment.status == "open" %} 
+                                    <span style="color: rgb(58, 253, 58); font-weight: bold;">Not Booked</span>
+                                {% endif %}
+                            {% if appointment.status == "booked" %} 
+                                <span style="color: rgb(236, 29, 29); font-weight: bold;">Booked</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <form method="POST">
+                                {% csrf_token %}
+                                <input type="hidden" name="appointment_id" value="{{ appointment.id }}">
+                                <button type="submit" class="btn btn-primary appointment-button" style="font-size: 12px;">Update</button>
+                            </form>
+                        </td> -->
+                        
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        {% else %} 
+        <p class="mt-4">No purchases yet!</p>
+        {% endif %}
+    </div>
+</div>
+    
+    
+{% endblock %}

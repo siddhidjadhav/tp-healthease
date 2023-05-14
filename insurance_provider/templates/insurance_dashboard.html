@@ -1,0 +1,208 @@
+{% extends 'insurance_base.html' %}
+{% load static %}
+{% block extrahead %} 
+<link rel="stylesheet" href="{% static 'css/insurance_styles.css' %}">
+<style>    
+    .cancel-request-form-hidden {
+        display: none;
+    }
+
+    .cancel-request-form-active {
+        display: visible;
+    }
+
+    .insurance-list {
+        margin-right: 55px;
+        padding-right:50px;
+        border-right: 1px solid rgb(227, 227, 227)
+    }
+
+    @media screen and (max-width: 768px) {
+        .insurance-list {
+            border-right: 0;
+            margin-right: 0;
+            padding-right: 0;
+            overflow: auto;
+            max-height: 300px;
+            margin-bottom: 20px;
+        }
+
+    }
+
+
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="main-container">
+    <div class="mt-4">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    {{message}}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %} 
+    </div>
+    
+    {{email}}
+    <div class="d-block d-md-flex mt-4" >
+        <div class="w-100 insurance-list">
+            <h2 style="font-size: 20px; font-weight: bold; color: rgb(133, 132, 132);">Insurances..</h2>
+            <p style="font-size: 18px;">{% if not insurance_list %}You have not created any insurances for sale{% endif %}</p>
+            <table class="table table-hover table-bordered mt-2">
+                <!-- <thead>
+                    <tr>
+                        <th scope="col">
+                            Name
+                        </th>
+                    </tr>
+                </thead> -->
+                
+                <tbody>
+                    {% for insurance in insurance_list %}
+                    <tr style="font-size: 16px;">
+                        <td>
+                            {{insurance.display_id}}
+                        </td>
+                        <td>
+                            <a style="text-decoration: none; color: black;" href="{% url 'insurance_detail' insurance.id %}">{{ insurance }}</a> <br/> 
+                        </td>
+                        <td align="right">
+                            <a class="btn btn-outline-secondary btn-sm " style="text-decoration: none; color: black;font-size: 14px;" href="{% url 'delete_insurance' insurance.id %}">delete</a> <br/> 
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                
+            </table>
+            
+        </div>
+        <div>
+            <h5 style="font-size: 20px; font-weight: bold; color: rgb(133, 132, 132);">New Insurance </h5>
+            <form action="" method=POST class="mt-2">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <input type="submit" class="btn btn-secondary mt-4" style="font-size: 15px;" value="submit"/>
+            </form>  
+        </div>
+    </div>
+    <div class="mt-4">
+        {% if claimed_insurances_list %}
+        <p style="font-size: 20px; font-weight: bold; color: rgb(133, 132, 132);">You have claim requests </p>
+
+        <table class="table table-hover mt-4 mx-auto d-none d-md-table">
+            
+            <thead>
+            <tr>
+                <th style="font-size: 15px; color: rgb(136, 136, 136)" scope="col" colspan="2">Name</th>
+                <th style="font-size: 15px; color: rgb(136, 136, 136)" scope="col" colspan="2">Customer Details</th>
+                <th style="font-size: 15px; color: rgb(136, 136, 136)" scope="col" colspan="2">Date Purchased</th>
+                <th style="font-size: 15px; color: rgb(136, 136, 136)" scope="col" colspan="2">Action</th>
+                
+            </tr>
+            </thead>
+            <tbody>
+            
+            
+            {% for insurance in claimed_insurances_list %}
+                {% if insurance.claim == 'requested' %}
+                <tr style="font-size: 16px;">
+                    <td colspan="2">
+                        {{insurance.insuranceid.name}}
+                    </td>
+                    <td colspan="2">
+                        {{insurance.customer.first_name}} {{insurance.customer.last_name}}
+                        <p>{{insurance.customer.email}}</p>
+                    </td>
+                    <td colspan="2">
+                        {{insurance.datepurchased}}
+                    </td>
+                    <td colspan="2">
+                        {% if insurance.claim == 'requested' %}
+                        <form method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="claimaccepted" value="{{ insurance.id }}">
+                            <button type="submit" class="btn btn-primary appointment-button" style="font-size: 12px;">Accept</button>
+                        </form>
+                        
+                        <!-- <button type="submit" class="btn btn-danger appointment-button mt-1" style="font-size: 12px;" id="cancel_request">Cancel Request</button> -->
+                        <p class="my-0">To cancel request enter reason:</p>
+                        <form method="POST" class="mt-1" id="cancel-form">
+                            {% csrf_token %}
+                            <input type="hidden" name="cancelrequest" value="{{ insurance.id }}">
+                            <input type="text" class="border rounded" name="reason" placeholder="Cancellation Reason" maxlength="500"><br>
+                            <button type="submit" class="btn btn-danger appointment-button mt-1" style="font-size: 12px;" >Submit</button>
+                        </form>
+                        {% else %} 
+                        <p>Claimed</p>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endif %}
+            {% endfor %}
+            
+            </tbody>
+        </table>
+
+        <div class="mb-5 mt-4 border rounded p-2 d-md-none">
+            {% for insurance in claimed_insurances_list %}
+                {% if insurance.claim == 'requested' %}
+                <div>
+                    <div>
+                        <p class="my-0">{{insurance.insuranceid.name}}</p>
+                        <p class="my-0"><span class="my-0" style="font-size: 15px; font-weight: 500;">{{insurance.datepurchased}}</span><span class="my-0" style="font-size: 13px; font-weight: 500;color: rgb(155, 154, 154);"> Purchase Date</span></p>
+                    </div>
+                    
+                    <p style="font-size: 18px;">Customer - {{insurance.customer.first_name}} {{insurance.customer.last_name}}</p>
+                    
+                    <div class="mt-3">
+                        <p class="mb-2">Take Actions: </p>
+                        {% if insurance.claim == 'requested' %}
+                        <form method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="claimaccepted" value="{{ insurance.id }}">
+                            <button type="submit" class="btn btn-primary appointment-button" style="font-size: 12px;">Accept</button>
+                        </form>
+                        
+                        <!-- <button type="submit" class="btn btn-danger appointment-button mt-1" style="font-size: 12px;" id="cancel_request">Cancel Request</button> -->
+                        <p class="my-0">To cancel request enter reason:</p>
+                        <form method="POST" class="mt-1" id="cancel-form">
+                            {% csrf_token %}
+                            <input type="hidden" name="cancelrequest" value="{{ insurance.id }}">
+                            <input type="text" class="border rounded" name="reason" placeholder="Cancellation Reason" maxlength="500"><br>
+                            <button type="submit" class="btn btn-danger appointment-button mt-1" style="font-size: 12px;" >Submit</button>
+                        </form>
+                        {% else %} 
+                        <p>Claimed</p>
+                        {% endif %}
+                    </div>
+
+                </div>
+                <!-- <tr style="font-size: 16px;">
+                    
+                    <td colspan="2">
+                        {{insurance.datepurchased}}
+                    </td>
+                    <td colspan="2">
+                        
+                    </td>
+                </tr> -->
+                {% endif %}
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+    
+<script>
+let cancelRequest = document.querySelector('#cancel_request')
+let cancelForm = document.querySelector('#cancel-form')
+cancelRequest.addEventListener('click', () => {
+    cancelForm.classList.remove('cancel-request-form-hidden')
+    cancelRequest.classList.toggle('cancel-request-form-hidden')
+})
+</script>
+    
+{% endblock %}

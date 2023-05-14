@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block styles %}
+<style>
+    .main-container {
+        margin-top: 80px;
+        margin-bottom: 40px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+{% include 'patient_page_navbar.html' %}
+
+<div class="main-container mx-5">
+    <p class="m-0"><span style="font-size: 50px;font-weight: 500;">Hi,</span><span style="letter-spacing: 8px;font-weight: 500;color: rgb(243, 76, 76);"> {{user.first_name}} {{user.last_name}}</span></p>
+    <p class="m-0" style="font-size: 15px;"><span style="font-weight: 500; color: rgb(112, 112, 112);">Email: &nbsp;</span> {{user.email}}</p>
+
+    <p class="mt-5 my-0" style="font-size: 22px; font-weight: 500;">Medical History</p>
+    <table class="table table-hover mt-4 mx-md-auto">
+                
+        <thead>
+        <tr>
+            <th style="font-size: 15px; color: rgb(136, 136, 136)" scope="col" colspan="2">Doctor Name</th>
+            <th class="d-none d-md-table-cell" style="font-size: 15px; color: rgb(136, 136, 136)" scope="col">Date</th>
+            <th style="font-size: 15px; color: rgb(136, 136, 136);text-align: center;" scope="col">Time</th>
+            <th style="font-size: 15px; color: rgb(136, 136, 136);text-align: center;" scope="col">Report</th>
+        </tr>
+        </thead>
+        <tbody>
+        
+        
+        {% for appointment in appointments %}
+            <tr style="font-size: 16px;">
+                <td colspan="2">
+                    {{appointment.doctor_id.first_name}} {{appointment.doctor_id.last_name}}
+                </td>
+                <td class="d-none d-md-table-cell">{{appointment.date}}</td>
+                <td style="text-align: center;">
+                    {{appointment.time}}
+                </td>
+                <td style="text-align: center;">
+                    <div class="d-flex justify-content-center">
+                        <div style="max-width: 200px;overflow: auto; max-height: 150px">
+                            {% if appointment.prescription %} 
+                                {{appointment.prescription}}
+                            {% else %} 
+                                No Prescription!
+                            {% endif %}
+                            
+                        </div>
+                    </div>
+                   
+                    
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    
+    
+</div>
+
+{% endblock %}
